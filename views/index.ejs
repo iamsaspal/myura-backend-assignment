@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Products</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="container mt-5">
+
+<h2 class="mb-4">Product List</h2>
+
+<a href="/add-product" class="btn btn-primary mb-3">Add Product</a>
+<a href="/order" class="btn btn-success mb-3">Place Order</a>
+
+<table class="table table-bordered">
+
+<thead>
+
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Price</th>
+<th>Category</th>
+<th>Stock</th>
+</tr>
+
+</thead>
+
+<tbody id="products"></tbody>
+
+</table>
+
+<script>
+
+fetch("/api/products")
+.then(res=>res.json())
+.then(data=>{
+
+const table=document.getElementById("products")
+
+data.forEach(p=>{
+
+table.innerHTML+=`
+
+<tr>
+
+<td>${p.id}</td>
+<td>${p.product_name}</td>
+<td>₹${p.price}</td>
+<td>${p.category}</td>
+<td>${p.stock}</td>
+
+</tr>
+
+`
+
+})
+
+})
+
+</script>
+
+</body>
+</html>
