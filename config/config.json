@@ -1,3 +1,4 @@
+
 {
   "development": {
     "username": "root",
@@ -15,9 +16,10 @@
   },
   "production": {
     "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
+    "password": "BXwykBtupiiGWAOUbslmBsqRNecDSotI",
+    "database": "railway",
+    "host": "gondola.proxy.rlwy.net",
+    "port": 22427,
     "dialect": "mysql"
   }
 }
