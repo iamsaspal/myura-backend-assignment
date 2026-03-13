@@ -44,4 +44,10 @@ res.render("editProduct",{product})
 
 });
 
+router.get("/order-history",(req,res)=>{
+
+res.render("orderHistory")
+
+});
+
 module.exports = router;

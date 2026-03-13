@@ -1,0 +1,69 @@
+<%- include("partials/header") %>
+
+<h2 class="mb-4">Order History</h2>
+
+<div class="card p-3">
+
+<table class="table table-bordered">
+
+<thead class="table-dark">
+
+<tr>
+
+<th>ID</th>
+<th>Customer</th>
+<th>Email</th>
+<th>Product</th>
+<th>Quantity</th>
+<th>Date</th>
+
+</tr>
+
+</thead>
+
+<tbody id="orders"></tbody>
+
+</table>
+
+</div>
+
+
+<script>
+
+fetch("/api/orders")
+
+.then(res=>res.json())
+
+.then(data=>{
+
+const table=document.getElementById("orders")
+
+data.forEach(o=>{
+
+table.innerHTML+=`
+
+<tr>
+
+<td>${o.id}</td>
+
+<td>${o.customer_name}</td>
+
+<td>${o.email}</td>
+
+<td>${o.product_name}</td>
+
+<td>${o.quantity}</td>
+
+<td>${new Date(o.createdAt).toLocaleDateString()}</td>
+
+</tr>
+
+`
+
+})
+
+})
+
+</script>
+
+<%- include("partials/footer") %>
