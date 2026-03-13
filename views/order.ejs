@@ -73,7 +73,7 @@ body: JSON.stringify(data)
 
 const result = await res.json()
 
-if(res.status !== 200){
+if(!res.ok){
 
 Swal.fire({
 icon:"error",

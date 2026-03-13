@@ -6,42 +6,32 @@ try{
 
 const {customer_name, customer_email, product_id, quantity} = req.body
 
-// VALIDATION
-
 if(!customer_name || !customer_email){
-return res.send("Customer details required")
+return res.status(400).json({message:"Customer details required"})
 }
 
 if(!product_id){
-return res.send("Please select product")
+return res.status(400).json({message:"Please select product"})
 }
 
 if(!quantity || quantity <= 0){
-return res.send("Quantity must be greater than 0")
+return res.status(400).json({message:"Quantity must be greater than 0"})
 }
-
-// PRODUCT CHECK
 
 const product = await Product.findByPk(product_id)
 
 if(!product){
-return res.send("Product not found")
+return res.status(404).json({message:"Product not found"})
 }
-
-// STOCK CHECK
 
 if(product.stock < quantity){
-return res.send("Insufficient stock")
+return res.status(400).json({message:"Insufficient stock"})
 }
-
-// CREATE ORDER
 
 const order = await Order.create({
 customer_name,
 customer_email
 })
-
-// CREATE ORDER ITEM
 
 await OrderItem.create({
 order_id: order.id,
@@ -49,18 +39,19 @@ product_id,
 quantity
 })
 
-// REDUCE STOCK
-
 product.stock = product.stock - quantity
 await product.save()
 
-res.redirect("/")
+res.status(200).json({
+success:true,
+message:"Order placed successfully"
+})
 
 }catch(err){
 
 console.log(err)
 
-res.send("Order failed")
+res.status(500).json({message:"Order failed"})
 
 }
 
