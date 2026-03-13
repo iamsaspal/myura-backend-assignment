@@ -116,21 +116,32 @@ res.send("Error updating stock")
 
 };
 
-exports.deleteProduct = async (req,res)=>{
+exports.updateProduct = async (req,res)=>{
 
-try{
+const id = req.params.id
+
+const {product_name,price,category} = req.body
+
+await Product.update(
+
+{product_name,price,category},
+
+{where:{id}}
+
+)
+
+res.json({message:"Product updated"})
+
+};
+
+
+exports.deleteProduct = async (req,res)=>{
 
 const id = req.params.id
 
 await Product.destroy({where:{id}})
 
 res.json({message:"Product deleted"})
-
-}catch(err){
-
-res.status(500).json({message:"Server error"})
-
-}
 
 };
 

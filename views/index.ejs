@@ -1,55 +1,10 @@
 <%- include("partials/header") %>
 
-<h2 class="mb-4">Product List</h2>
+<h2 class="mb-4">Product Dashboard</h2>
 
 <a href="/add-product" class="btn btn-primary mb-3">Add Product</a>
 <a href="/order" class="btn btn-success mb-3">Place Order</a>
 <a href="/update-stock" class="btn btn-warning mb-3">Update Stock</a>
-
-
-<!-- Dashboard Stats -->
-
-<div class="row mb-4">
-
-<div class="col-md-4">
-
-<div class="card p-3">
-
-<h6>Total Products</h6>
-
-<h3 id="totalProducts">0</h3>
-
-</div>
-
-</div>
-
-
-<div class="col-md-4">
-
-<div class="card p-3">
-
-<h6>Low Stock Products</h6>
-
-<h3 id="lowStock">0</h3>
-
-</div>
-
-</div>
-
-
-<div class="col-md-4">
-
-<div class="card p-3">
-
-<h6>Total Inventory</h6>
-
-<h3 id="totalStock">0</h3>
-
-</div>
-
-</div>
-
-</div>
 
 <input 
 type="text" 
@@ -57,6 +12,7 @@ id="search"
 class="form-control mb-3" 
 placeholder="Search product..."
 >
+
 
 <div class="card p-3">
 
@@ -90,18 +46,24 @@ placeholder="Search product..."
 let productsData = []
 
 fetch("/api/products")
+
 .then(res=>res.json())
+
 .then(data=>{
 
 productsData = data
+
 renderProducts(data)
 
 })
 
+
+
 function renderProducts(products){
 
 const table = document.getElementById("products")
-table.innerHTML=""
+
+table.innerHTML = ""
 
 products.forEach(p=>{
 
@@ -110,19 +72,54 @@ table.innerHTML += `
 <tr>
 
 <td>${p.id}</td>
-<td>${p.product_name}</td>
-<td>₹${p.price}</td>
-<td>${p.category}</td>
 
 <td>
 
-${p.stock < 5
+<input 
+class="form-control"
+value="${p.product_name}"
+id="name-${p.id}"
+>
+
+</td>
+
+<td>
+
+<input 
+class="form-control"
+value="${p.price}"
+id="price-${p.id}"
+>
+
+</td>
+
+<td>
+
+<input 
+class="form-control"
+value="${p.category}"
+id="category-${p.id}"
+>
+
+</td>
+
+<td>
+
+${p.stock < 5 
 ? `<span class="badge bg-danger">${p.stock}</span>`
 : `<span class="badge bg-success">${p.stock}</span>`}
 
 </td>
 
 <td>
+
+<button 
+class="btn btn-sm btn-primary"
+onclick="updateProduct(${p.id})">
+
+Save
+
+</button>
 
 <button 
 class="btn btn-sm btn-danger"
@@ -141,6 +138,8 @@ Delete
 })
 
 }
+
+
 
 document.getElementById("search").addEventListener("keyup",(e)=>{
 
@@ -163,12 +162,47 @@ async function deleteProduct(id){
 if(!confirm("Delete this product?")) return
 
 await fetch(`/api/products/${id}`,{
+
 method:"DELETE"
+
 })
 
 location.reload()
 
 }
+
+
+
+async function updateProduct(id){
+
+const product_name = document.getElementById(`name-${id}`).value
+const price = document.getElementById(`price-${id}`).value
+const category = document.getElementById(`category-${id}`).value
+
+await fetch(`/api/products/${id}`,{
+
+method:"PUT",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+product_name,
+price,
+category
+
+})
+
+})
+
+alert("Product updated")
+
+location.reload()
+
+}
+
 </script>
 
 
