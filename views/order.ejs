@@ -4,8 +4,7 @@
 
 <div class="card p-4 col-md-6">
 
-<form action="/api/orders" method="POST">
-
+<form id="orderForm">
 <input type="text" name="customer_name" class="form-control" placeholder="Customer Name" required>
 
 <input type="email" name="customer_email" class="form-control" placeholder="Email" required>
@@ -76,6 +75,53 @@ if(response.ok){
 alert("Order placed")
 }else{
 alert(result.message)
+}
+
+})
+
+</script>
+
+<script>
+
+document.getElementById("orderForm").addEventListener("submit", async function(e){
+
+e.preventDefault()
+
+const data = {
+customer_name: document.querySelector("[name='customer_name']").value,
+customer_email: document.querySelector("[name='customer_email']").value,
+product_id: document.querySelector("[name='product_id']").value,
+quantity: document.querySelector("[name='quantity']").value
+}
+
+const res = await fetch("/api/orders",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body: JSON.stringify(data)
+})
+
+const result = await res.json()
+
+if(res.status !== 200){
+
+Swal.fire({
+icon:"error",
+title:"Order Failed",
+text: result.message
+})
+
+}else{
+
+Swal.fire({
+icon:"success",
+title:"Order Placed",
+text:"Your order has been created successfully"
+}).then(()=>{
+window.location="/"
+})
+
 }
 
 })
