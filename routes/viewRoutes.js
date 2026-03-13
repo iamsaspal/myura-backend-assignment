@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { Product } = require("../models");
 
 router.get("/", (req,res)=>{
     res.render("index")
@@ -15,8 +16,7 @@ router.get("/order",(req,res)=>{
 
 router.get("/update-stock", async (req,res)=>{
 
-const products = await product.findAll()
-
+const products = await Product.findAll()
 res.render("updateStock",{products})
 
 });
