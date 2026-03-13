@@ -44,7 +44,8 @@ category,
 stock
 })
 
-res.status(201).json(product)
+// res.status(201).json(product)
+res.redirect("/")
 
 }catch(err){
 
