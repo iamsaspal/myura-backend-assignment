@@ -96,6 +96,14 @@ const {product_id,stock} = req.body
 
 try{
 
+
+if(!stock || stock <= 0){
+return res.send(`
+<h3 style="color:red">Stock value required</h3>
+<a href="/update-stock">Go Back</a>
+`)
+}
+
 const product = await Product.findByPk(product_id)
 
 if(!product){
