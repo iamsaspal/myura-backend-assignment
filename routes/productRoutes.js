@@ -1,10 +1,8 @@
 const express = require("express");
-const { body } = require("express-validator")
+const { body } = require("express-validator");
 const router = express.Router();
 
 const productController = require("../controllers/productControllers");
-
-
 
 
 router.post(
@@ -25,10 +23,10 @@ body("stock").isInt().withMessage("Stock must be integer")
 productController.updateStock
 );
 
-
-
-
 router.get("/",productController.getProducts);
+
+router.post("/update/stock",productController.updateStockFromUI);
+
 
 
 module.exports = router;

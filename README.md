@@ -7,7 +7,7 @@ This project implements a simple e-commerce backend using Node.js, Express, Sequ
 - Product Management API
 - Order Management API
 - Stock validation
-- Simple UI using EJS
+- Simple UI
 - SQL database using MySQL
 
 ## Technologies
@@ -16,7 +16,7 @@ Node.js
 Express  
 Sequelize ORM  
 MySQL  
-EJS  
+  
 
 ## Setup
 

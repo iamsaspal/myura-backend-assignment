@@ -87,5 +87,31 @@ res.json(product)
 res.status(500).json({message:"Server error"})
 
 }
+};
+
+exports.updateStockFromUI = async (req,res)=>{
+
+const {product_id,stock} = req.body
+
+try{
+
+const product = await Product.findByPk(product_id)
+
+if(!product){
+return res.send("Product not found")
+}
+
+product.stock = stock
+
+await product.save()
+
+res.redirect("/update-stock")
+
+}catch(err){
+
+res.send("Error updating stock")
+
+}
 
 };
+

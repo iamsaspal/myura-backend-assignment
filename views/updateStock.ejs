@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Update Stock</title>
+</head>
+
+<body>
+
+<h2>Update Product Stock</h2>
+
+<form action="/api/products/update-stock" method="POST">
+
+<select name="product_id">
+
+<% products.forEach(product=>{ %>
+
+<option value="<%= product.id %>">
+
+<%= product.product_name %> (Stock: <%= product.stock %>)
+
+</option>
+
+<% }) %>
+
+</select>
+
+<input type="number" name="stock" placeholder="New Stock" required>
+
+<button type="submit">Update Stock</button>
+
+</form>
+
+</body>
+
+</html>
