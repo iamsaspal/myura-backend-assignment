@@ -62,11 +62,33 @@ res.status(500).json({message:"Order failed"})
 };
 
 
-exports.getOrders = async(req,res)=>{
+exports.getOrders = async (req,res)=>{
 
 try{
 
 const orders = await Order.findAll({
+
+include:[
+
+{
+
+model: OrderItem,
+
+include:[
+
+{
+
+model: Product,
+
+attributes:["product_name"]
+
+}
+
+]
+
+}
+
+],
 
 order:[["createdAt","DESC"]]
 

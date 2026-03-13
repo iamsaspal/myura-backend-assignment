@@ -38,27 +38,31 @@ fetch("/api/orders")
 
 const table=document.getElementById("orders")
 
-data.forEach(o=>{
+data.forEach(order=>{
+
+order.OrderItems.forEach(item=>{
 
 table.innerHTML+=`
 
 <tr>
 
-<td>${o.id}</td>
+<td>${order.id}</td>
 
-<td>${o.customer_name}</td>
+<td>${order.customer_name}</td>
 
-<td>${o.email}</td>
+<td>${order.customer_email}</td>
 
-<td>${o.product_name}</td>
+<td>${item.Product.product_name}</td>
 
-<td>${o.quantity}</td>
+<td>${item.quantity}</td>
 
-<td>${new Date(o.createdAt).toLocaleDateString()}</td>
+<td>${new Date(order.createdAt).toLocaleDateString()}</td>
 
 </tr>
 
 `
+
+})
 
 })
 
