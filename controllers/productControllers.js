@@ -1,4 +1,5 @@
-const {Product} = require("../models")
+const {Product} = require("../models");
+const { validationResult } = require("express-validator");
 
 exports.getProducts = async (req,res)=>{
 
@@ -14,10 +15,17 @@ res.status(500).json({message:"Server error"})
 
 }
 
-}
+};
 
 
 exports.addProduct = async (req,res)=>{
+
+
+const errors = validationResult(req)
+
+if(!errors.isEmpty()){
+return res.status(400).json({errors: errors.array()})
+}
 
 const {product_name,price,category,stock} = req.body
 
@@ -44,10 +52,17 @@ res.status(500).json({message:"Error creating product"})
 
 }
 
-}
+};
 
 
 exports.updateStock = async (req,res)=>{
+
+
+const errors = validationResult(req)
+
+if(!errors.isEmpty()){
+return res.status(400).json({errors: errors.array()})
+}
 
 const id = req.params.id
 const {stock} = req.body
@@ -73,4 +88,4 @@ res.status(500).json({message:"Server error"})
 
 }
 
-}
+};

@@ -1,10 +1,16 @@
-const { Order, OrderItem, Product, sequelize } = require("../models")
+const { validationResult } = require("express-validator");
+const { Order, OrderItem, Product, sequelize } = require("../models");
 
 exports.placeOrder = async (req, res) => {
 
 const t = await sequelize.transaction()
 
 try {
+const errors = validationResult(req)
+
+if(!errors.isEmpty()){
+return res.status(400).json({errors: errors.array()})
+}
 
 const { customer_name, customer_email, items } = req.body
 
