@@ -1,18 +1,16 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Update Stock</title>
-</head>
+<div class="container mt-5">
 
-<body>
+<h2 class="mb-4">Update Product Stock</h2>
 
-<h2>Update Product Stock</h2>
+<form action="/update-stock" method="POST">
 
-<form action="/api/products/update-stock" method="POST">
+<div class="row">
 
-<select name="product_id">
+<div class="col-md-6">
 
-<% products.forEach(product=>{ %>
+<select class="form-control" name="product_id">
+
+<% products.forEach(product => { %>
 
 <option value="<%= product.id %>">
 
@@ -24,12 +22,26 @@
 
 </select>
 
-<input type="number" name="stock" placeholder="New Stock" required>
+</div>
 
-<button type="submit">Update Stock</button>
+<div class="col-md-3">
+
+<input class="form-control" name="stock" placeholder="New Stock">
+
+</div>
+
+<div class="col-md-3">
+
+<button class="btn btn-warning w-100">
+
+Update Stock
+
+</button>
+
+</div>
+
+</div>
 
 </form>
 
-</body>
-
-</html>
+</div>
