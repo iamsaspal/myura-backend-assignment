@@ -2,17 +2,15 @@
 
 <h2>Update Product Stock</h2>
 
-<div class="card p-4 col-md-6">
+<form action="/api/products/update-stock" method="POST">
 
-<form action="/update-stock" method="POST">
+<select name="product_id" class="form-control mb-3">
 
-<select class="form-control mb-3" name="product_id">
+<% products.forEach(p=>{ %>
 
-<% products.forEach(product=>{ %>
+<option value="<%=p.id%>">
 
-<option value="<%=product.id%>">
-
-<%=product.product_name%> (Stock: <%=product.stock%>)
+<%=p.product_name%> (Stock:<%=p.stock%>)
 
 </option>
 
@@ -20,16 +18,19 @@
 
 </select>
 
-<input class="form-control mb-3" name="stock" placeholder="New Stock">
+<input
+type="number"
+name="stock"
+placeholder="New Stock"
+class="form-control mb-3"
+>
 
-<button class="btn btn-warning">
+<button class="btn btn-primary">
 
 Update Stock
 
 </button>
 
 </form>
-
-</div>
 
 <%- include("partials/footer") %>

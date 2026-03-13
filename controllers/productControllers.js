@@ -106,7 +106,7 @@ product.stock = stock
 
 await product.save()
 
-res.redirect("/update-stock")
+res.redirect("/")
 
 }catch(err){
 
