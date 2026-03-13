@@ -4,20 +4,27 @@
 
 <div class="card p-4 col-md-6">
 
-<form id="orderForm" action="/api/orders" method="POST">
+<form id="orderForm">
 
-<input type="text" name="customer_name" class="form-control" placeholder="Customer Name" required>
+<input type="text" name="customer_name" class="form-control mb-3" placeholder="Customer Name" required>
 
-<input type="email" name="customer_email" class="form-control" placeholder="Email" required>
+<input type="email" name="customer_email" class="form-control mb-3" placeholder="Email" required>
 
-<select name="product_id" class="form-control" required>
+<select name="product_id" class="form-control mb-3" required>
+
 <option value="">Select Product</option>
+
 <% products.forEach(p=>{ %>
-<option value="<%= p.id %>"><%= p.product_name %> (Stock:<%= p.stock %>)</option>
+
+<option value="<%= p.id %>" data-stock="<%= p.stock %>">
+<%= p.product_name %> (Stock:<%= p.stock %>)
+</option>
+
 <% }) %>
+
 </select>
 
-<input type="number" name="quantity" class="form-control" placeholder="Quantity" required min="1">
+<input type="number" name="quantity" class="form-control mb-3" placeholder="Quantity" required min="1">
 
 <button class="btn btn-success">Place Order</button>
 
@@ -27,34 +34,33 @@
 
 <script>
 
-fetch("/api/products")
-.then(res=>res.json())
-.then(products=>{
-
-const dropdown=document.getElementById("product")
-
-products.forEach(p=>{
-
-const option=document.createElement("option")
-
-option.value=p.id
-option.text=p.product_name+" (Stock:"+p.stock+")"
-
-dropdown.appendChild(option)
-
-})
-
-})
-
 document.getElementById("orderForm").addEventListener("submit", async function(e){
 
 e.preventDefault()
 
+const productSelect = document.querySelector("[name='product_id']")
+const selectedOption = productSelect.options[productSelect.selectedIndex]
+
+const stock = selectedOption.getAttribute("data-stock")
+const quantity = document.querySelector("[name='quantity']").value
+
+if(quantity > stock){
+
+Swal.fire({
+icon:"error",
+title:"Stock Error",
+text:"Quantity exceeds available stock"
+})
+
+return
+
+}
+
 const data = {
 customer_name: document.querySelector("[name='customer_name']").value,
 customer_email: document.querySelector("[name='customer_email']").value,
-product_id: document.querySelector("[name='product_id']").value,
-quantity: document.querySelector("[name='quantity']").value
+product_id: productSelect.value,
+quantity: quantity
 }
 
 const res = await fetch("/api/orders",{
@@ -88,7 +94,6 @@ window.location="/"
 }
 
 })
-
 
 </script>
 
