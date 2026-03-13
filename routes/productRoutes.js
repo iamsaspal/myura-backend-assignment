@@ -25,7 +25,7 @@ productController.updateStock
 
 router.get("/",productController.getProducts);
 
-router.post("/update/stock",productController.updateStockFromUI);
+router.post("/update-stock",productController.updateStockFromUI);
 
 
 
