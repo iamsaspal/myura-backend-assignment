@@ -6,7 +6,7 @@ try{
 
 const {customer_name,customer_email,items} = req.body
 
-// stock check first
+// STEP 1: STOCK CHECK
 
 for(const item of items){
 
@@ -18,26 +18,26 @@ return res.status(404).json({message:"Product not found"})
 
 if(product.stock < item.quantity){
 return res.status(400).json({
-message: `Insufficient stock for ${product.product_name}`
+message:`Insufficient stock for ${product.product_name}`
 })
 }
 
 }
 
-// create order
+// STEP 2: CREATE ORDER
 
 const order = await Order.create({
 customer_name,
 customer_email
 })
 
-// reduce stock + create order items
+// STEP 3: REDUCE STOCK
 
 for(const item of items){
 
 const product = await Product.findByPk(item.product_id)
 
-product.stock -= item.quantity
+product.stock = product.stock - item.quantity
 
 await product.save()
 
@@ -49,14 +49,14 @@ quantity: item.quantity
 
 }
 
-res.json({
-message:"Order placed successfully"
-})
+res.json({message:"Order placed successfully"})
 
 }catch(err){
+
+console.log(err)
 
 res.status(500).json({message:"Order failed"})
 
 }
 
-};
+}
