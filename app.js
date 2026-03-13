@@ -26,10 +26,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-
+app.use("/", viewRoutes);
 app.use("/api/products",productRoutes);
 app.use("/api/orders",orderRoutes);
-app.use("/", viewRoutes);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -13,4 +13,12 @@ router.get("/order",(req,res)=>{
     res.render("order")
 });
 
+router.get("/update-stock", async (req,res)=>{
+
+const products = await product.findAll()
+
+res.render("updateStock",{products})
+
+});
+
 module.exports = router;
