@@ -6,16 +6,67 @@
 <a href="/order" class="btn btn-success mb-3">Place Order</a>
 <a href="/update-stock" class="btn btn-warning mb-3">Update Stock</a>
 
-<table class="table table-bordered">
 
-<thead>
+<!-- Dashboard Stats -->
+
+<div class="row mb-4">
+
+<div class="col-md-4">
+
+<div class="card p-3">
+
+<h6>Total Products</h6>
+
+<h3 id="totalProducts">0</h3>
+
+</div>
+
+</div>
+
+
+<div class="col-md-4">
+
+<div class="card p-3">
+
+<h6>Low Stock Products</h6>
+
+<h3 id="lowStock">0</h3>
+
+</div>
+
+</div>
+
+
+<div class="col-md-4">
+
+<div class="card p-3">
+
+<h6>Total Inventory</h6>
+
+<h3 id="totalStock">0</h3>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="card p-3">
+
+<table class="table table-bordered table-hover">
+
+<thead class="table-dark">
 
 <tr>
+
 <th>ID</th>
 <th>Name</th>
 <th>Price</th>
 <th>Category</th>
 <th>Stock</th>
+
 </tr>
 
 </thead>
@@ -24,25 +75,50 @@
 
 </table>
 
+</div>
+
+
+
 <script>
 
 fetch("/api/products")
+
 .then(res=>res.json())
+
 .then(data=>{
 
 const table=document.getElementById("products")
 
+let totalStock = 0
+let lowStock = 0
+
 data.forEach(p=>{
 
-table.innerHTML+=`
+totalStock += p.stock
+
+if(p.stock < 5){
+lowStock++
+}
+
+table.innerHTML += `
 
 <tr>
 
 <td>${p.id}</td>
+
 <td>${p.product_name}</td>
+
 <td>₹${p.price}</td>
+
 <td>${p.category}</td>
-<td>${p.stock}</td>
+
+<td>
+
+${p.stock < 5 
+? `<span class="badge bg-danger">${p.stock}</span>`
+: `<span class="badge bg-success">${p.stock}</span>`}
+
+</td>
 
 </tr>
 
@@ -50,8 +126,16 @@ table.innerHTML+=`
 
 })
 
+
+document.getElementById("totalProducts").innerText = data.length
+
+document.getElementById("lowStock").innerText = lowStock
+
+document.getElementById("totalStock").innerText = totalStock
+
 })
 
 </script>
+
 
 <%- include("partials/footer") %>
