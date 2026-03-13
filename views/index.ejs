@@ -51,7 +51,12 @@
 
 </div>
 
-
+<input 
+type="text" 
+id="search" 
+class="form-control mb-3" 
+placeholder="Search product..."
+>
 
 <div class="card p-3">
 
@@ -66,6 +71,7 @@
 <th>Price</th>
 <th>Category</th>
 <th>Stock</th>
+<th>Action</th>
 
 </tr>
 
@@ -81,42 +87,50 @@
 
 <script>
 
+let productsData = []
+
 fetch("/api/products")
-
 .then(res=>res.json())
-
 .then(data=>{
 
-const table=document.getElementById("products")
+productsData = data
+renderProducts(data)
 
-let totalStock = 0
-let lowStock = 0
+})
 
-data.forEach(p=>{
+function renderProducts(products){
 
-totalStock += p.stock
+const table = document.getElementById("products")
+table.innerHTML=""
 
-if(p.stock < 5){
-lowStock++
-}
+products.forEach(p=>{
 
 table.innerHTML += `
 
 <tr>
 
 <td>${p.id}</td>
-
 <td>${p.product_name}</td>
-
 <td>₹${p.price}</td>
-
 <td>${p.category}</td>
 
 <td>
 
-${p.stock < 5 
+${p.stock < 5
 ? `<span class="badge bg-danger">${p.stock}</span>`
 : `<span class="badge bg-success">${p.stock}</span>`}
+
+</td>
+
+<td>
+
+<button 
+class="btn btn-sm btn-danger"
+onclick="deleteProduct(${p.id})">
+
+Delete
+
+</button>
 
 </td>
 
@@ -126,15 +140,35 @@ ${p.stock < 5
 
 })
 
+}
 
-document.getElementById("totalProducts").innerText = data.length
+document.getElementById("search").addEventListener("keyup",(e)=>{
 
-document.getElementById("lowStock").innerText = lowStock
+const keyword = e.target.value.toLowerCase()
 
-document.getElementById("totalStock").innerText = totalStock
+const filtered = productsData.filter(p=>
+
+p.product_name.toLowerCase().includes(keyword)
+
+)
+
+renderProducts(filtered)
 
 })
 
+
+
+async function deleteProduct(id){
+
+if(!confirm("Delete this product?")) return
+
+await fetch(`/api/products/${id}`,{
+method:"DELETE"
+})
+
+location.reload()
+
+}
 </script>
 
 

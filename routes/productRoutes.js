@@ -27,6 +27,8 @@ router.get("/",productController.getProducts);
 
 router.post("/update-stock",productController.updateStockFromUI);
 
+router.delete("/:id", productController.deleteProduct);
+
 
 
 module.exports = router;
