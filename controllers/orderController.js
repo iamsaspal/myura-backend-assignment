@@ -4,58 +4,63 @@ exports.placeOrder = async (req,res)=>{
 
 try{
 
-const {customer_name,customer_email,items} = req.body
+const {customer_name, customer_email, product_id, quantity} = req.body
 
-// STEP 1: STOCK CHECK
+// VALIDATION
 
-for(const item of items){
+if(!customer_name || !customer_email){
+return res.send("Customer details required")
+}
 
-const product = await Product.findByPk(item.product_id)
+if(!product_id){
+return res.send("Please select product")
+}
+
+if(!quantity || quantity <= 0){
+return res.send("Quantity must be greater than 0")
+}
+
+// PRODUCT CHECK
+
+const product = await Product.findByPk(product_id)
 
 if(!product){
-return res.status(404).json({message:"Product not found"})
+return res.send("Product not found")
 }
 
-if(product.stock < item.quantity){
-return res.status(400).json({
-message:`Insufficient stock for ${product.product_name}`
-})
+// STOCK CHECK
+
+if(product.stock < quantity){
+return res.send("Insufficient stock")
 }
 
-}
-
-// STEP 2: CREATE ORDER
+// CREATE ORDER
 
 const order = await Order.create({
 customer_name,
 customer_email
 })
 
-// STEP 3: REDUCE STOCK
-
-for(const item of items){
-
-const product = await Product.findByPk(item.product_id)
-
-product.stock = product.stock - item.quantity
-
-await product.save()
+// CREATE ORDER ITEM
 
 await OrderItem.create({
 order_id: order.id,
-product_id: item.product_id,
-quantity: item.quantity
+product_id,
+quantity
 })
 
-}
+// REDUCE STOCK
 
-res.json({message:"Order placed successfully"})
+product.stock = product.stock - quantity
+await product.save()
+
+res.redirect("/")
 
 }catch(err){
 
 console.log(err)
 
-res.status(500).json({message:"Order failed"})
+res.send("Order failed")
 
 }
 

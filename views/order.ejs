@@ -10,10 +10,28 @@
 
 <input class="form-control mb-3" id="email" placeholder="Email">
 
-<select class="form-control mb-3" id="product"></select>
+<select name="product_id" class="form-control" required>
 
-<input class="form-control mb-3" id="qty" placeholder="Quantity">
+<option value="">Select Product</option>
 
+<% products.forEach(p => { %>
+
+<option value="<%= p.id %>">
+<%= p.product_name %> (Stock:<%= p.stock %>)
+</option>
+
+<% }) %>
+
+</select>
+
+<input 
+type="number"
+name="quantity"
+class="form-control"
+placeholder="Enter Quantity"
+required
+min="1"
+>
 <button class="btn btn-success">Place Order</button>
 
 </form>
