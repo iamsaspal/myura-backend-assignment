@@ -2,9 +2,9 @@
 
 <h2 class="mb-4">Product Dashboard</h2>
 
-<a href="/add-product" class="btn btn-primary mb-3">Add Product</a>
+<!-- <a href="/add-product" class="btn btn-primary mb-3">Add Product</a>
 <a href="/order" class="btn btn-success mb-3">Place Order</a>
-<a href="/update-stock" class="btn btn-warning mb-3">Update Stock</a>
+<a href="/update-stock" class="btn btn-warning mb-3">Update Stock</a> -->
 
 <input 
 type="text" 
@@ -15,13 +15,7 @@ placeholder="Search product..."
 
 <div id="lowStockAlert"></div>
 
-<div class="card p-3 mb-4">
 
-<h4>Inventory Analytics</h4>
-
-<canvas id="stockChart"></canvas>
-
-</div>
 
 <div class="card p-3">
 
@@ -47,7 +41,7 @@ placeholder="Search product..."
 </div>
 
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
 
 <script>
 
@@ -183,37 +177,7 @@ document.getElementById("lowStockAlert").innerHTML = alertHTML
 
 
 
-function renderChart(data){
 
-const names = data.map(p => p.product_name)
-
-const stocks = data.map(p => p.stock)
-
-const ctx = document.getElementById("stockChart")
-
-new Chart(ctx,{
-
-type:"bar",
-
-data:{
-
-labels:names,
-
-datasets:[{
-
-label:"Stock",
-
-data:stocks,
-
-backgroundColor:"#0d6efd"
-
-}]
-
-}
-
-})
-
-}
 
 
 
