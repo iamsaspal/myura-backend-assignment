@@ -33,4 +33,15 @@ res.send("Error loading products");
 
 });
 
+
+router.get("/edit-product/:id", async(req,res)=>{
+
+const id = req.params.id
+
+const product = await Product.findByPk(id)
+
+res.render("editProduct",{product})
+
+});
+
 module.exports = router;

@@ -73,35 +73,11 @@ table.innerHTML += `
 
 <td>${p.id}</td>
 
-<td>
+<td>${p.product_name}</td>
 
-<input 
-class="form-control"
-value="${p.product_name}"
-id="name-${p.id}"
->
+<td>₹${p.price}</td>
 
-</td>
-
-<td>
-
-<input 
-class="form-control"
-value="${p.price}"
-id="price-${p.id}"
->
-
-</td>
-
-<td>
-
-<input 
-class="form-control"
-value="${p.category}"
-id="category-${p.id}"
->
-
-</td>
+<td>${p.category}</td>
 
 <td>
 
@@ -113,13 +89,13 @@ ${p.stock < 5
 
 <td>
 
-<button 
-class="btn btn-sm btn-primary"
-onclick="updateProduct(${p.id})">
+<a 
+href="/edit-product/${p.id}" 
+class="btn btn-sm btn-primary">
 
-Save
+Edit
 
-</button>
+</a>
 
 <button 
 class="btn btn-sm btn-danger"

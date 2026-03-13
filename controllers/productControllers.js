@@ -145,3 +145,29 @@ res.json({message:"Product deleted"})
 
 };
 
+exports.updateProduct = async (req,res)=>{
+
+const id = req.params.id
+
+const {product_name,price,category,stock} = req.body
+
+try{
+
+await Product.update(
+
+{product_name,price,category,stock},
+
+{where:{id}}
+
+)
+
+res.redirect("/")
+
+}catch(err){
+
+res.status(500).json({message:"Server error"})
+
+}
+
+};
+
