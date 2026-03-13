@@ -4,7 +4,8 @@
 
 <div class="card p-4 col-md-6">
 
-<form id="orderForm">
+<form id="orderForm" action="/api/orders" method="POST">
+
 <input type="text" name="customer_name" class="form-control" placeholder="Customer Name" required>
 
 <input type="email" name="customer_email" class="form-control" placeholder="Email" required>
@@ -44,7 +45,6 @@ dropdown.appendChild(option)
 })
 
 })
-
 
 document.getElementById("orderForm").addEventListener("submit", async function(e){
 
@@ -89,8 +89,7 @@ window.location="/"
 
 })
 
+
 </script>
-
-
 
 <%- include("partials/footer") %>
