@@ -44,7 +44,9 @@ const selectedOption = productSelect.options[productSelect.selectedIndex]
 const stock = selectedOption.getAttribute("data-stock")
 const quantity = document.querySelector("[name='quantity']").value
 
-if(quantity > stock){
+/* STOCK VALIDATION */
+
+if(Number(quantity) > Number(stock)){
 
 Swal.fire({
 icon:"error",
@@ -53,8 +55,18 @@ text:"Quantity exceeds available stock"
 })
 
 return
-
 }
+
+/* SHOW LOADING */
+
+Swal.fire({
+title:"Processing Order...",
+text:"Please wait",
+allowOutsideClick:false,
+didOpen:()=>{
+Swal.showLoading()
+}
+})
 
 const data = {
 customer_name: document.querySelector("[name='customer_name']").value,
@@ -62,6 +74,8 @@ customer_email: document.querySelector("[name='customer_email']").value,
 product_id: productSelect.value,
 quantity: quantity
 }
+
+/* API CALL */
 
 const res = await fetch("/api/orders",{
 method:"POST",
@@ -73,7 +87,11 @@ body: JSON.stringify(data)
 
 const result = await res.json()
 
-if(!res.ok){
+Swal.close()
+
+/* ERROR RESPONSE */
+
+if(res.status !== 200){
 
 Swal.fire({
 icon:"error",
@@ -82,6 +100,8 @@ text: result.message
 })
 
 }else{
+
+/* SUCCESS RESPONSE */
 
 Swal.fire({
 icon:"success",
