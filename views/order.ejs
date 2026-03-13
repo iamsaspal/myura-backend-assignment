@@ -53,33 +53,45 @@ ${p.product_name} (Stock:${p.stock})
 
 })
 
-document.getElementById("orderForm").addEventListener("submit",async(e)=>{
+document.getElementById("orderForm").addEventListener("submit", async (e)=>{
 
 e.preventDefault()
 
-const data={
+const data = {
 
-customer_name:document.getElementById("name").value,
-customer_email:document.getElementById("email").value,
+customer_name: document.getElementById("name").value,
+customer_email: document.getElementById("email").value,
 
 items:[{
-product_id:document.getElementById("product").value,
-quantity:document.getElementById("qty").value
+product_id: document.getElementById("product").value,
+quantity: document.getElementById("qty").value
 }]
 
 }
 
-await fetch("/api/orders",{
+const response = await fetch("/api/orders",{
 
 method:"POST",
-headers:{"Content-Type":"application/json"},
+headers:{
+"Content-Type":"application/json"
+},
 body:JSON.stringify(data)
 
 })
 
-alert("Order placed")
+const result = await response.json()
 
-})
+if(response.ok){
+
+alert("Order placed successfully")
+
+}else{
+
+alert(result.message)
+
+}
+
+});
 
 </script>
 
