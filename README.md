@@ -1,50 +1,80 @@
-# Myura Wellness Backend Assignment
+# Myura Backend Assignment
 
-This project implements a simple e-commerce backend using Node.js, Express, Sequelize, and MySQL.
+This project is a backend system for managing products and orders.  
+It allows administrators to manage product inventory and place orders while automatically updating stock.
+
+---
+
+## Tech Stack
+
+- Node.js
+- Express.js
+- MySQL
+- Sequelize ORM
+- EJS
+- JWT Authentication
+- Bootstrap
+- SweetAlert
+
+---
 
 ## Features
 
-- Product Management API
-- Order Management API
-- Stock validation
-- Simple UI
-- SQL database using MySQL
+### Product Management
+- Add product
+- Edit product
+- Delete product
+- Update product stock
 
-## Technologies
+### Order Management
+- Place order
+- Automatically reduce stock
+- Reject order if stock is insufficient
 
-Node.js  
-Express  
-Sequelize ORM  
-MySQL  
-  
+### Admin Authentication
+- JWT based login system
+- Protected APIs
+- Logout functionality
 
-## Setup
+### Additional Features
+- Order history with pagination
+- Product search
+- Low stock alerts
+- SweetAlert popups
+- Mobile responsive UI
 
-Install dependencies
+---
 
+## Admin Login Credentials
+
+Email: admin@myura.com  
+Password: admin123
+
+url : https://myura-backend-assignment.onrender.com/login
+---
+
+
+
+## Installation
+
+Clone repository
+
+```bash
+git clone https://github.com/iamsaspal/myura-backend-assignment.git
+
+
+
+#Install dependencies
 npm install
 
-Run server
+#Run Project
+npm start node
 
-nodemon app.js
 
-## API Endpoints
+#server runs on 
+http://localhost:3000
 
-GET /api/products  
-POST /api/products  
-PUT /api/products/:id/stock  
-POST /api/orders
 
-## Database
+#Live Deployment
+https://myura-backend-assignment.onrender.com/
 
-Tables:
-
-products  
-orders  
-orderitems
-
-## UI Pages
-
-/ → product list  
-/add-product → add product  
-/order → place order
