@@ -4,19 +4,17 @@
 
 <div class="card p-3">
 
-<table class="table table-bordered">
+<table class="table table-bordered table-hover">
 
 <thead class="table-dark">
 
 <tr>
-
-<th>ID</th>
+<th>Sr. No</th>
 <th>Customer</th>
 <th>Email</th>
 <th>Product</th>
 <th>Quantity</th>
 <th>Date</th>
-
 </tr>
 
 </thead>
@@ -28,25 +26,47 @@
 </div>
 
 
+<!-- Pagination -->
+
+<nav class="mt-4 d-flex justify-content-center">
+
+<ul class="pagination" id="pagination"></ul>
+
+</nav>
+
+
 <script>
 
-fetch("/api/orders")
+    if(!localStorage.getItem("token")){
+window.location="/login"
+}
 
-.then(res=>res.json())
+let currentPage = 1
+const limit = 10
 
-.then(data=>{
+function loadOrders(page = 1){
 
-const table=document.getElementById("orders")
+fetch(`/api/orders?page=${page}&limit=${limit}`)
 
-data.forEach(order=>{
+.then(res => res.json())
 
-order.OrderItems.forEach(item=>{
+.then(data => {
 
-table.innerHTML+=`
+const table = document.getElementById("orders")
+
+table.innerHTML = ""
+
+let count = (page - 1) * limit + 1
+
+data.orders.forEach(order => {
+
+order.OrderItems.forEach(item => {
+
+table.innerHTML += `
 
 <tr>
 
-<td>${order.id}</td>
+<td>${count++}</td>
 
 <td>${order.customer_name}</td>
 
@@ -66,8 +86,53 @@ table.innerHTML+=`
 
 })
 
+renderPagination(data.totalPages,page)
+
 })
 
+}
+
+
+
+function renderPagination(totalPages,page){
+
+const pagination = document.getElementById("pagination")
+
+pagination.innerHTML = ""
+
+for(let i = 1; i <= totalPages; i++){
+
+pagination.innerHTML += `
+
+<li class="page-item ${page === i ? 'active' : ''}">
+
+<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+
+</li>
+
+`
+
+}
+
+}
+
+
+
+function changePage(page){
+
+currentPage = page
+
+loadOrders(page)
+
+}
+
+
+
+loadOrders()
+
 </script>
+
+
+
 
 <%- include("partials/footer") %>

@@ -62,35 +62,38 @@ exports.getOrders = async (req,res)=>{
 
 try{
 
-const orders = await Order.findAll({
+const page = parseInt(req.query.page) || 1
+const limit = parseInt(req.query.limit) || 10
+
+const offset = (page-1)*limit
+
+const {count,rows} = await Order.findAndCountAll({
 
 include:[
-
 {
-
 model: OrderItem,
-
 include:[
-
 {
-
 model: Product,
-
 attributes:["product_name"]
-
 }
-
 ]
-
 }
-
 ],
 
-order:[["createdAt","DESC"]]
+order:[["createdAt","DESC"]],
+
+limit,
+offset
 
 })
 
-res.json(orders)
+const totalPages = Math.ceil(count/limit)
+
+res.json({
+orders:rows,
+totalPages
+})
 
 }catch(err){
 

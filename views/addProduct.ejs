@@ -2,22 +2,150 @@
 
 <h2>Add Product</h2>
 
-<div class="card p-4 col-md-6">
+<div class="card p-4 col-lg-6 col-md-8 col-sm-12">
 
-<form action="/api/products" method="POST">
 
-<input class="form-control mb-3" name="product_name" placeholder="Product Name" required>
+<form id="addProductForm">
 
-<input class="form-control mb-3" name="price" placeholder="Price" required>
+<input 
+type="text" 
+name="product_name" 
+class="form-control mb-3" 
+placeholder="Product Name"
+required
+>
 
-<input class="form-control mb-3" name="category" placeholder="Category" required>
+<input 
+type="number" 
+name="price" 
+class="form-control mb-3" 
+placeholder="Price"
+required
+>
 
-<input class="form-control mb-3" name="stock" placeholder="Stock" required>
+<input 
+type="text" 
+name="category" 
+class="form-control mb-3" 
+placeholder="Category"
+required
+>
+
+<input 
+type="number" 
+name="stock" 
+class="form-control mb-3" 
+placeholder="Stock"
+required
+min="0"
+>
 
 <button class="btn btn-primary">Add Product</button>
 
 </form>
 
 </div>
+
+<script>
+
+    if(!localStorage.getItem("token")){
+window.location="/login"
+}
+
+document.getElementById("addProductForm").addEventListener("submit", async function(e){
+
+e.preventDefault()
+
+const product_name = document.querySelector("[name='product_name']").value
+const price = document.querySelector("[name='price']").value
+const category = document.querySelector("[name='category']").value
+const stock = document.querySelector("[name='stock']").value
+
+/* FRONTEND VALIDATION */
+
+if(!product_name || !price || !category){
+
+Swal.fire({
+icon:"error",
+title:"Validation Error",
+text:"All fields are required"
+})
+
+return
+}
+
+if(stock < 0){
+
+Swal.fire({
+icon:"error",
+title:"Validation Error",
+text:"Stock cannot be negative"
+})
+
+return
+}
+
+/* LOADING POPUP */
+
+Swal.fire({
+title:"Adding Product...",
+allowOutsideClick:false,
+didOpen:()=>{
+Swal.showLoading()
+}
+})
+
+const res = await fetch("/api/products",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json",
+Authorization: localStorage.getItem("token")
+},
+
+body: JSON.stringify({
+product_name,
+price,
+category,
+stock
+})
+
+})
+
+
+
+
+const result = await res.json()
+
+Swal.close()
+
+/* ERROR */
+
+if(res.status !== 200){
+
+Swal.fire({
+icon:"error",
+title:"Error",
+text: result.message
+})
+
+}else{
+
+Swal.fire({
+icon:"success",
+title:"Success",
+text: result.message
+}).then(()=>{
+window.location="/"
+})
+
+}
+
+})
+
+</script>
+
+
 
 <%- include("partials/footer") %>

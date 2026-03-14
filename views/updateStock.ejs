@@ -1,17 +1,20 @@
 <%- include("partials/header") %>
 
-<h2>Update Product Stock</h2>
+<h2>Update Stock</h2>
 
-<form action="/api/products/update-stock" method="POST">
+<div class="card p-4 col-lg-6 col-md-8 col-sm-12">
 
-<select name="product_id" class="form-control mb-3">
+
+<form id="stockForm">
+
+<select name="product_id" class="form-control mb-3" required>
+
+<option value="">Select Product</option>
 
 <% products.forEach(p=>{ %>
 
-<option value="<%=p.id%>">
-
-<%=p.product_name%> (Stock:<%=p.stock%>)
-
+<option value="<%= p.id %>" data-stock="<%= p.stock %>">
+<%= p.product_name %> (Stock:<%= p.stock %>)
 </option>
 
 <% }) %>
@@ -21,18 +24,132 @@
 <input 
 type="number" 
 name="stock" 
-class="form-control"
-placeholder="Enter New Stock"
-required
-min="1"
->
+class="form-control mb-3" 
+placeholder="New Stock" 
+required 
+min="0">
 
-<button class="btn btn-primary">
-
-Update Stock
-
-</button>
+<button class="btn btn-warning">Update Stock</button>
 
 </form>
+
+</div>
+
+<script>
+
+    if(!localStorage.getItem("token")){
+window.location="/login"
+}
+
+document.getElementById("stockForm").addEventListener("submit", async function(e){
+
+e.preventDefault()
+
+const productSelect = document.querySelector("[name='product_id']")
+const stockInput = document.querySelector("[name='stock']")
+
+const product_id = productSelect.value
+const stock = Number(stockInput.value)
+
+/* BASIC VALIDATION */
+
+if(!product_id){
+
+Swal.fire({
+icon:"error",
+title:"Validation Error",
+text:"Please select a product"
+})
+
+return
+
+}
+
+if(stock < 0){
+
+Swal.fire({
+icon:"error",
+title:"Validation Error",
+text:"Stock cannot be negative"
+})
+
+return
+
+}
+
+/* SHOW LOADING */
+
+Swal.fire({
+title:"Updating Stock...",
+text:"Please wait",
+allowOutsideClick:false,
+didOpen:()=>{
+Swal.showLoading()
+}
+})
+
+try{
+
+const res = await fetch("/api/products/update-stock",{
+
+method:"PUT",
+
+headers:{
+"Content-Type":"application/json",
+Authorization: localStorage.getItem("token")
+},
+
+body: JSON.stringify({
+product_id: product_id,
+stock: stock
+})
+
+})
+
+const result = await res.json()
+
+Swal.close()
+
+/* ERROR RESPONSE */
+
+if(res.status !== 200){
+
+Swal.fire({
+icon:"error",
+title:"Update Failed",
+text: result.message || "Something went wrong"
+})
+
+}else{
+
+/* SUCCESS RESPONSE */
+
+Swal.fire({
+icon:"success",
+title:"Stock Updated",
+text:"Product stock updated successfully"
+}).then(()=>{
+window.location="/"
+})
+
+}
+
+}catch(err){
+
+Swal.close()
+
+Swal.fire({
+icon:"error",
+title:"Server Error",
+text:"Unable to update stock"
+})
+
+}
+
+})
+
+</script>
+
+
 
 <%- include("partials/footer") %>

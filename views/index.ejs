@@ -2,10 +2,6 @@
 
 <h2 class="mb-4">Product Dashboard</h2>
 
-<!-- <a href="/add-product" class="btn btn-primary mb-3">Add Product</a>
-<a href="/order" class="btn btn-success mb-3">Place Order</a>
-<a href="/update-stock" class="btn btn-warning mb-3">Update Stock</a> -->
-
 <input 
 type="text" 
 id="search" 
@@ -15,16 +11,17 @@ placeholder="Search product..."
 
 <div id="lowStockAlert"></div>
 
-
-
 <div class="card p-3">
+
+<div class="table-responsive">
 
 <table class="table table-bordered table-hover">
 
 <thead class="table-dark">
 
 <tr>
-<th>ID</th>
+<th>Sr.No</th>
+<th>Product ID</th>
 <th>Name</th>
 <th>Price</th>
 <th>Category</th>
@@ -39,43 +36,67 @@ placeholder="Search product..."
 </table>
 
 </div>
+</div>
 
+<!-- PAGINATION -->
 
-<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+<nav class="mt-4 d-flex justify-content-center">
+<ul class="pagination" id="pagination"></ul>
+</nav>
 
 <script>
-
+if(!localStorage.getItem("token")){
+window.location="/login"
+}
 let productsData = []
+let currentPage = 1
+const limit = 10
 
-fetch("/api/products")
+/* FETCH PRODUCTS */
+
+function loadProducts(page=1){
+
+fetch(`/api/products?page=${page}&limit=${limit}`,{
+
+headers:{
+Authorization: localStorage.getItem("token")
+}
+
+})
 
 .then(res=>res.json())
 
 .then(data=>{
 
-productsData = data
+productsData = data.products
 
-renderProducts(data)
+renderProducts(data.products,page)
 
-renderChart(data)
+renderPagination(data.totalPages,page)
 
-checkLowStock(data)
+checkLowStock(data.products)
 
 })
 
+}
 
+/* RENDER PRODUCTS */
 
-function renderProducts(products){
+function renderProducts(products,page){
 
 const table=document.getElementById("products")
 
 table.innerHTML=""
+
+let count = (page - 1) * limit + 1
 
 products.forEach(p=>{
 
 table.innerHTML+=`
 
 <tr>
+
+<td>${count++}</td>
 
 <td>${p.id}</td>
 
@@ -95,20 +116,14 @@ ${p.stock < 5
 
 <td>
 
-<a 
-href="/edit-product/${p.id}" 
-class="btn btn-sm btn-primary">
-
+<a href="/edit-product/${p.id}" class="btn btn-sm btn-primary">
 Edit
-
 </a>
 
 <button 
 class="btn btn-sm btn-danger"
 onclick="deleteProduct(${p.id})">
-
 Delete
-
 </button>
 
 </td>
@@ -121,23 +136,53 @@ Delete
 
 }
 
+/* PAGINATION */
 
+function renderPagination(totalPages,page){
+
+const pagination=document.getElementById("pagination")
+
+pagination.innerHTML=""
+
+for(let i=1;i<=totalPages;i++){
+
+pagination.innerHTML+=`
+
+<li class="page-item ${page===i?'active':''}">
+
+<a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+
+</li>
+
+`
+
+}
+
+}
+
+function changePage(page){
+
+currentPage = page
+
+loadProducts(page)
+
+}
+
+/* SEARCH */
 
 document.getElementById("search").addEventListener("keyup",(e)=>{
 
 const keyword = e.target.value.toLowerCase()
 
 const filtered = productsData.filter(p=>
-
 p.product_name.toLowerCase().includes(keyword)
-
 )
 
-renderProducts(filtered)
+renderProducts(filtered,currentPage)
 
 })
 
-
+/* LOW STOCK ALERT */
 
 function checkLowStock(data){
 
@@ -156,9 +201,7 @@ let alertHTML = `
 `
 
 lowStockProducts.forEach(p=>{
-
 alertHTML += `<li>${p.product_name} - only ${p.stock} left</li>`
-
 })
 
 alertHTML += `
@@ -175,26 +218,86 @@ document.getElementById("lowStockAlert").innerHTML = alertHTML
 
 }
 
-
-
-
-
-
+/* DELETE PRODUCT */
 
 async function deleteProduct(id){
 
-if(!confirm("Delete this product?")) return
+const confirm = await Swal.fire({
 
-await fetch(`/api/products/${id}`,{
-
-method:"DELETE"
+title:"Delete Product?",
+text:"This action cannot be undone",
+icon:"warning",
+showCancelButton:true,
+confirmButtonColor:"#d33",
+cancelButtonColor:"#3085d6",
+confirmButtonText:"Yes, delete it"
 
 })
 
-location.reload()
+if(!confirm.isConfirmed) return
+
+Swal.fire({
+title:"Deleting Product...",
+allowOutsideClick:false,
+didOpen:()=>{Swal.showLoading()}
+})
+
+try{
+
+const res = await fetch(`/api/products/${id}`,{
+
+method:"DELETE",
+
+headers:{
+Authorization: localStorage.getItem("token")
+}
+
+})
+
+const result = await res.json()
+
+Swal.close()
+
+if(res.status !== 200){
+
+Swal.fire({
+icon:"error",
+title:"Delete Failed",
+text: result.message
+})
+
+}else{
+
+Swal.fire({
+icon:"success",
+title:"Deleted",
+text:"Product deleted successfully"
+}).then(()=>{
+loadProducts(currentPage)
+})
 
 }
 
+}catch(err){
+
+Swal.close()
+
+Swal.fire({
+icon:"error",
+title:"Server Error",
+text:"Unable to delete product"
+})
+
+}
+
+}
+
+/* INITIAL LOAD */
+
+loadProducts()
+
 </script>
+
+
 
 <%- include("partials/footer") %>
